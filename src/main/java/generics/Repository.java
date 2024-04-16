@@ -3,9 +3,14 @@ package generics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Repository<T> {
+public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V> {
 
-    record Person(String firstName, String lastName) {}
+    record Person(String firstName, String lastName, Long id) implements IDable<Long>, Saveable {}
+    interface IDable<U> {
+        U id();
+    }
+
+    interface Saveable {}       // just for showing how to use it in the declaration
     private List<T> records = new ArrayList<>();
 
     List<T> findAll() {
@@ -17,23 +22,24 @@ public class Repository<T> {
         return record;
     }
 
-    T findByIndex(long index) {
-        return records.get(Long.valueOf(index).intValue());
+    T findById(V id) {
+        return records.stream().filter(r -> r.id().equals(id)).findFirst().orElseThrow();
     }
 
 
     public static void main(String[] args) {
-        Repository<String> repo = new Repository<>();
-        repo.save("house");
-        repo.save("tree");
-        repo.save("road");
+//        Repository<String> repo = new Repository<>();
+//        repo.save("house");
+//        repo.save("tree");
+//        repo.save("road");
+//
+//        System.out.println(repo.findAll());
 
-        System.out.println(repo.findAll());
-
-        Repository<Person> pRepo = new Repository<>();
-        pRepo.save(new Person("John", "Doe"));
-        pRepo.save(new Person("Jane", "Doe"));
+        Repository<Person, Long> pRepo = new Repository<>();
+        pRepo.save(new Person("John", "Doe", 1L));
+        pRepo.save(new Person("Jane", "Doe", 2L));
 
         System.out.println(pRepo.findAll());
+        System.out.println(pRepo.findById(1L));
     }
 }
