@@ -2,6 +2,7 @@ package generics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V> {
 
@@ -26,6 +27,11 @@ public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V>
         return records.stream().filter(r -> r.id().equals(id)).findFirst().orElseThrow();
     }
 
+    // static generic methods even in generic class have their own types, so T here is not a T from the class"
+    // the method has to be marked <T,U,V...> before return type specified
+    static <T,V> V encrypt(T data, Function<T, V> func) {
+        return func.apply(data);
+    }
 
     public static void main(String[] args) {
 //        Repository<String> repo = new Repository<>();
@@ -41,5 +47,8 @@ public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V>
 
         System.out.println(pRepo.findAll());
         System.out.println(pRepo.findById(1L));
+
+        // usage of static encrypt method. To use autocompletion from IDE we should specify types at call
+        System.out.println(Repository.<String, Integer>encrypt("hello", (String::hashCode)));
     }
 }
