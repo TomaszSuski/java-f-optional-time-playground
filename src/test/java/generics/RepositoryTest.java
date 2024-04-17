@@ -2,6 +2,9 @@ package generics;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class RepositoryTest {
@@ -25,12 +28,14 @@ class RepositoryTest {
         Repository.Person person = new Repository.Person("Test", "User", 3L);
         repository.save(person);
         assertEquals(3, repository.findAll().size());
-        assertEquals(person, repository.findById(3L));
+        Optional<Repository.Person> personOptional = repository.findById(3L);
+        assertEquals(person, personOptional.orElse(null));
     }
 
     @Test
     void testFindById() {
-        Repository.Person person = repository.findById(1L);
+        Optional<Repository.Person> personOptional = repository.findById(1L);
+        Repository.Person person = personOptional.orElse(null);
         assertNotNull(person);
         assertEquals("John", person.firstName());
         assertEquals("Doe", person.lastName());
@@ -39,9 +44,9 @@ class RepositoryTest {
 
     @Test
     void testFindByIdNotFound() {
-        assertThrows(RuntimeException.class, () -> repository.findById(100L));
+        Optional<Repository.Person> personOptional = repository.findById(100L);
+        assertTrue(personOptional.isEmpty());
     }
-
     @Test
     void testEncrypt() {
         String data = "hello";

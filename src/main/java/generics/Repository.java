@@ -2,6 +2,7 @@ package generics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V> {
@@ -23,8 +24,8 @@ public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V>
         return record;
     }
 
-    T findById(V id) {
-        return records.stream().filter(r -> r.id().equals(id)).findFirst().orElseThrow();
+    Optional<T> findById(V id) {
+        return records.stream().filter(r -> r.id().equals(id)).findFirst();
     }
 
     // static generic methods even in generic class have their own types, so T here is not a T from the class"
