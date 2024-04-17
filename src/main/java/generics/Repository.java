@@ -8,29 +8,29 @@ import java.util.function.Function;
 public class Repository<T extends Repository.IDable<V> & Repository.Saveable, V> {
 
     record Person(String firstName, String lastName, Long id) implements IDable<Long>, Saveable {}
-    interface IDable<U> {
+    public interface IDable<U> {
         U id();
     }
 
-    interface Saveable {}       // just for showing how to use it in the declaration
+    public interface Saveable {}       // just for showing how to use it in the declaration
     private List<T> records = new ArrayList<>();
 
-    List<T> findAll() {
+    public List<T> findAll() {
         return records;
     }
 
-    T save(T record) {
+    public T save(T record) {
         records.add(record);
         return record;
     }
 
-    Optional<T> findById(V id) {
+    public Optional<T> findById(V id) {
         return records.stream().filter(r -> r.id().equals(id)).findFirst();
     }
 
     // static generic methods even in generic class have their own types, so T here is not a T from the class"
     // the method has to be marked <T,U,V...> before return type specified
-    static <T,V> V encrypt(T data, Function<T, V> func) {
+    public static <T,V> V encrypt(T data, Function<T, V> func) {
         return func.apply(data);
     }
 
