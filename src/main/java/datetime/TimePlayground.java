@@ -1,6 +1,7 @@
 package datetime;
 
 import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 
 public class TimePlayground {
     public static void main(String[] args) {
@@ -47,5 +48,12 @@ public class TimePlayground {
         // California - GMT-8
         ZonedDateTime zxmas = ZonedDateTime.of(xmas, ZoneId.of("-8"));
         System.out.println(zxmas.withZoneSameInstant(ZoneId.of("GMT+0")));
+        System.out.println();
+
+
+        // temporal adjuster is used to adjust date and time
+        System.out.printf("previous date:%n%s%ndate with temporal adjuster of next tuesday:%n%s%n", ld, ld.with(TemporalAdjusters.next(DayOfWeek.TUESDAY)));
+        System.out.println();
+
     }
 }
